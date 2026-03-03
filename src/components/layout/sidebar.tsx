@@ -1,7 +1,11 @@
 import Link from "next/link";
 import { LayoutDashboard, ReceiptText, Settings } from "lucide-react";
+import { requireAuth } from "@/lib/auth";
+import { RoleSwitcher } from "@/components/layout/role-switcher";
 
-export function Sidebar() {
+export async function Sidebar() {
+    const session = await requireAuth();
+
     return (
         <aside className="fixed inset-y-0 left-0 z-20 flex w-64 flex-col border-r bg-card px-4 py-6 text-card-foreground">
             <div className="flex items-center gap-2 px-2 pb-8">
@@ -36,15 +40,7 @@ export function Sidebar() {
             </nav>
 
             <div className="mt-auto pt-6 border-t">
-                <div className="flex items-center gap-3 px-3 py-2">
-                    <div className="size-8 rounded-full bg-muted flex items-center justify-center">
-                        <span className="text-xs font-medium">U</span>
-                    </div>
-                    <div className="flex flex-col">
-                        <span className="text-sm font-medium leading-none">User</span>
-                        <span className="text-xs text-muted-foreground mt-1">user@example.com</span>
-                    </div>
-                </div>
+                <RoleSwitcher currentRole={session.user.role} />
             </div>
         </aside>
     );

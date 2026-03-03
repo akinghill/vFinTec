@@ -1,28 +1,39 @@
+import { cookies } from "next/headers";
+
+export type Role = "ADMIN" | "FINANCE_MANAGER" | "VIEWER";
+
 // Mock session data for development
 export const MOCK_USER = {
     userId: "user_mock_123",
-    role: "ADMIN",
-} as const;
+    role: "ADMIN" as Role,
+};
 
 export const MOCK_ORG_ID = "org_mock_456";
 
 export interface AuthSession {
-    user: typeof MOCK_USER;
+    user: {
+        userId: string;
+        role: Role;
+    };
     orgId: string;
 }
 
 /**
  * Server-side utility to require an authenticated session.
- * Currently hardcoded to return a mock admin user for development.
+ * Reads the mocked role from cookies, falling back to ADMIN.
  * 
  * TODO: Implement actual JWT/session validation
  */
 export async function requireAuth(): Promise<AuthSession> {
-    // Simulating database/network delay
-    // await new Promise(resolve => setTimeout(resolve, 50));
+    const cookieStore = await cookies();
+    const roleCookie = cookieStore.get("mock_role")?.value as Role | undefined;
+    const role: Role = roleCookie && ["ADMIN", "FINANCE_MANAGER", "VIEWER"].includes(roleCookie) ? roleCookie : "ADMIN";
 
     return {
-        user: MOCK_USER,
+        user: {
+            ...MOCK_USER,
+            role,
+        },
         orgId: MOCK_ORG_ID,
     };
 }
