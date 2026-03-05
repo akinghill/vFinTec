@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 
-export type Role = "ADMIN" | "FINANCE_MANAGER" | "VIEWER";
+export type Role = "ADMIN" | "FINANCIAL_MANAGER" | "VIEWER";
 
 // Mock session data for development
 export const MOCK_USER = {
@@ -27,7 +27,7 @@ export interface AuthSession {
 export async function requireAuth(): Promise<AuthSession> {
     const cookieStore = await cookies();
     const roleCookie = cookieStore.get("mock_role")?.value as Role | undefined;
-    const role: Role = roleCookie && ["ADMIN", "FINANCE_MANAGER", "VIEWER"].includes(roleCookie) ? roleCookie : "ADMIN";
+    const role: Role = roleCookie && ["ADMIN", "FINANCIAL_MANAGER", "VIEWER"].includes(roleCookie) ? roleCookie : "ADMIN";
 
     return {
         user: {

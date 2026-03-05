@@ -21,7 +21,7 @@ export const rolePermissions: Record<Role, Permission[]> = {
         "members:remove",
         "settings:manage",
     ],
-    FINANCE_MANAGER: [
+    FINANCIAL_MANAGER: [
         "transactions:read",
         "transactions:create",
         "members:read",

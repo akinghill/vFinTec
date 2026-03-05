@@ -2,7 +2,8 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
 }
 
 datasource db {
@@ -11,7 +12,7 @@ datasource db {
 
 enum Role {
   ADMIN
-  FINANCE_MANAGER
+  FINANCIAL_MANAGER
   VIEWER
 }
 
@@ -54,6 +55,7 @@ model Transaction {
   createdBy      User         @relation(fields: [createdById], references: [id])
   createdById    String
   amount         Float
+  description    String
   category       String
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt

@@ -15,7 +15,7 @@ import { Role } from "@/lib/auth";
 
 const roles: { value: Role; label: string }[] = [
     { value: "ADMIN", label: "Admin" },
-    { value: "FINANCE_MANAGER", label: "Finance Manager" },
+    { value: "FINANCIAL_MANAGER", label: "Finance Manager" },
     { value: "VIEWER", label: "Viewer" },
 ];
 
