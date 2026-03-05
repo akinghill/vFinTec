@@ -64,7 +64,7 @@ async function main() {
     // 4. Generate transactions
     const categories = ["Revenue", "Infrastructure", "Payroll", "Marketing", "Software", "Operations"];
 
-    async function seedTransactions(orgId: string, createdUsers: any[]) {
+    async function seedTransactions(orgId: string, createdUsers: { id: string }[]) {
         // Determine random number between 40 and 60
         const count = faker.number.int({ min: 40, max: 60 });
         const transactions = Array.from({ length: count }).map(() => ({

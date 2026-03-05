@@ -1,14 +1,7 @@
 import { cookies } from "next/headers";
+import { prisma } from "@/server/db";
 
 export type Role = "ADMIN" | "FINANCIAL_MANAGER" | "VIEWER";
-
-// Mock session data for development
-export const MOCK_USER = {
-    userId: "user_mock_123",
-    role: "ADMIN" as Role,
-};
-
-export const MOCK_ORG_ID = "org_mock_456";
 
 export interface AuthSession {
     user: {
@@ -21,6 +14,7 @@ export interface AuthSession {
 /**
  * Server-side utility to require an authenticated session.
  * Reads the mocked role from cookies, falling back to ADMIN.
+ * Dynamically queries the database for seeded users to ensure valid IDs.
  * 
  * TODO: Implement actual JWT/session validation
  */
@@ -29,12 +23,30 @@ export async function requireAuth(): Promise<AuthSession> {
     const roleCookie = cookieStore.get("mock_role")?.value as Role | undefined;
     const role: Role = roleCookie && ["ADMIN", "FINANCIAL_MANAGER", "VIEWER"].includes(roleCookie) ? roleCookie : "ADMIN";
 
+    // Map mocked role to seeded test user email
+    const emailMap: Record<Role, string> = {
+        ADMIN: "admin@vector.com",
+        FINANCIAL_MANAGER: "manager@vector.com",
+        VIEWER: "viewer@vector.com"
+    };
+
+    const email = emailMap[role];
+
+    const membership = await prisma.membership.findFirst({
+        where: { user: { email } },
+        include: { user: true }
+    });
+
+    if (!membership) {
+        throw new Error(`Mock user ${email} not found. Did you run 'npx prisma db seed'?`);
+    }
+
     return {
         user: {
-            ...MOCK_USER,
+            userId: membership.userId,
             role,
         },
-        orgId: MOCK_ORG_ID,
+        orgId: membership.organizationId,
     };
 }
 
